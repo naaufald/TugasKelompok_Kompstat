@@ -1,0 +1,81 @@
+---
+title: "Untitled"
+author: "Naufal Fadhlullah"
+date: "2025-04-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+library(car)         
+library(lmtest)      
+library(nortest)     
+library(ModelMetrics)    
+data = read_xlsx("D:/Matana/Semester 4/komputasi statistik/coba_dataOLS.xlsx")
+names(data)
+colnames(data) <- c("Provinsi", "HLS", "RLS", "Pengeluaran", "IPM")
+data
+```
+
+```{r}
+data$HLS <- as.numeric(data$HLS)
+data$RLS <- as.numeric(data$RLS)
+data$Pengeluaran <- as.numeric(data$Pengeluaran)
+data$IPM <- as.numeric(data$IPM)
+model <- lm(IPM ~ HLS + RLS + Pengeluaran, data = data)
+summary(model)
+```
+
+```{r}
+data$HLS <- as.numeric(data$HLS)
+data$RLS <- as.numeric(data$RLS)
+data$Pengeluaran <- as.numeric(data$Pengeluaran)
+cor(data[, c("HLS", "RLS", "Pengeluaran")])
+```
+
+
+```{r}
+model <- lm(IPM ~ HLS + RLS + Pengeluaran, data = data)
+vif(model)
+```
+
+```{r}
+residuals <- residuals(model)
+shapiro.test(residuals)
+ad.test(residuals)
+```
+
+```{r}
+data$HLS <- as.numeric(data$HLS)
+data$RLS <- as.numeric(data$RLS)
+data$Pengeluaran <- as.numeric(data$Pengeluaran)
+data$IPM <- as.numeric(data$IPM)
+
+model <- lm(IPM ~ HLS + RLS + Pengeluaran, data = data)
+bptest(model)
+```
+
+```{r}
+dwtest(model)
+```
+```{r}
+prediksi <- predict(model)
+
+# RMSE dan MAE
+rmse(data$IPM, prediksi)
+mae(data$IPM, prediksi)
+```
+
+```{r}
+# Plot Residual
+plot(model$fitted.values, residuals,
+     main = "Residual vs Fitted",
+     xlab = "Fitted values",
+     ylab = "Residuals")
+abline(h = 0, col = "red")
+```
+
