@@ -1,0 +1,98 @@
+---
+title: "Untitled"
+output: html_document
+date: "2025-04-20"
+---
+
+```{r}
+a=read.csv("Book1.csv")
+```
+
+```{r}
+b=read.csv("Jumlah dan Persentase Penduduk Miskin Menurut Provinsi, 2024.csv")
+```
+
+```{r}
+ a$totalmiskin=c(1)
+```
+
+```{r}
+a[1,1]
+```
+
+
+```{r}
+b[1,1]
+```
+
+```{r}
+for(x in 1:length(a)){
+  for(y in 1:length(b)){
+    if(a[x,1]==b[y,1]){
+      a[x,3]=b[y,4]
+    }
+  }
+}
+```
+
+```{r}
+c=read.csv("Book2.csv")
+```
+
+```{r}
+summary(c)
+```
+
+```{r}
+c.ols=lm(miskin~pengeluaran + penduduk,data=c)
+```
+
+```{r}
+
+```
+
+
+```{r}
+summary(c.ols)
+```
+
+
+```{r}
+c$residu=c.ols$residuals
+```
+
+```{r}
+library(lmtest)
+```
+
+```{r}
+c.ols=lm(miskin~pengeluaran + penduduk,data=c)
+bptest(c.ols)
+```
+
+```{r}
+shapiro.test(c.ols$residuals)
+```
+
+
+```{r}
+vif(c.ols)
+```
+
+```{r}
+dwtest(c.ols)
+```
+
+
+```{r}
+c.ols=lm(miskin~pengeluaran + penduduk,data=c)
+c$residu=c.ols$residuals
+varfunc.ols <- lm(log(residu^2) ~ log(pengeluaran) + log(penduduk), data = c)
+c$varfunc <- exp(varfunc.ols$fitted.values)
+c.gls <- lm(miskin ~ pengeluaran + penduduk, weights = 1/sqrt(varfunc), data = c)
+```
+
+```{r}
+summary(c.gls)
+```
+
